@@ -1,0 +1,63 @@
+
+
+print blank board
+LOOP:
+
+prompt user: - "Enter number for column: \n" //user enters a number from one to seven
+program checks 2d array, starting from base array to see if the value in that array at index <<userInput>> is greater than 0
+
+loop:
+  if arr[<<userInput>>] == 0, then make it 1
+  else, go to next array
+  break loop after 6 iterations
+  
+  check win conditions loop:
+  //yet to implement/design
+  
+  computer randomly enters a col number
+  loop2:
+  if arr[<<compInput>>] == 0, then make it O
+  else, go to next row
+  break loop2 after 6 iterations
+  
+   check win conditions loop:
+  //yet to implement/design
+  
+  
+  call funcPrint
+  break LOOP if win/lose
+  
+  
+  print win/lose
+  
+  
+  
+  funcPrint:
+  arr[i2][i]
+  for i2 < 6
+  
+      for i < 7
+      
+       if arr[i2][i] == 0
+       
+       lw $t0, blankCell
+        print $t0
+        
+       if arr[i2][i] == 1
+        lw $t0, playerCell
+        print $t0
+        
+        if arr[i2][i] == 2
+        lw $t0, compCell
+        print $t0
+        
+        i++
+        
+   print ender
+   
+   i2++
+   
+   jr ...
+      
+  
+  
