@@ -1,0 +1,39 @@
+.data 
+
+playerCell: .asciiz "|X"
+blankCell:  .asciiz "|_"
+compCell:   .asciiz "|O"
+ender:      .asciiz "|\n"
+
+baseArray:  .word 0:7
+
+prEntry:    .asciiz "Enter number for column: \n"
+
+printW:     .asciiz "Congrats! You win!\n"
+printL:     .asciiz "Oh no, you lost :(\n"
+
+.text
+
+add $t2, $zero,$zero
+printBoard:
+add $t0, $zero,$zero #set $t0 to 0
+addi $t2, $t2, 1     	
+slti $t3, $t2, 6
+firstLoop:
+addi $t0, $t0, 1
+slti $t1, $t0, 7
+
+li $v0, 4
+la $a0, blankCell
+syscall
+
+bne $t1, $zero, firstLoop
+
+li $v0, 4
+la $a0, ender
+syscall
+
+bne $t3, $zero, printBoard
+
+
+
