@@ -1,6 +1,27 @@
 
 
-print blank board
+
+.data 
+
+playerCell: .asciiz "|X"
+blankCell:  .asciiz "|_"
+compCell:   .asciiz "|O"
+ender:      .asciiz "|\n"
+
+boardArray:  .word 0:7
+                  0:7
+                  0:7
+                  0:7
+                  0:7
+                  0:7
+
+prEntry:    .asciiz "Enter number for column: \n"
+
+printW:     .asciiz "Congrats! You win!\n"
+printL:     .asciiz "Oh no, you lost :(\n"
+
+.text
+
 LOOP:
 
 prompt user: - "Enter number for column: \n" //user enters a number from one to seven
@@ -19,7 +40,7 @@ loop:
   if arr[<<compInput>>] == 0, then make it O
   else, go to next row
   break loop2 after 6 iterations
-  
+    
    check win conditions loop:
   //yet to implement/design
   
@@ -30,34 +51,95 @@ loop:
   
   print win/lose
   
-  
+  jr LOOP
   
   funcPrint:
-  arr[i2][i]
   for i2 < 6
   
       for i < 7
       
        if arr[i2][i] == 0
        
-       lw $t0, blankCell
-        print $t0
+       li $v0, 4
+       la $a0, blankCell
+       syscall        #print blankCell
         
        if arr[i2][i] == 1
-        lw $t0, playerCell
-        print $t0
+       li $v0, 4
+       la $a0, playerCell
+       syscall        #print playerCell
         
         if arr[i2][i] == 2
-        lw $t0, compCell
-        print $t0
+       li $v0, 4
+       la $a0, compCell
+       syscall        #print compCell
         
         i++
         
-   print ender
+  
+  li $v0, 4
+  la $a0, ender
+  syscall       #print ender
    
    i2++
    
-   jr ...
+   jr ... #jumpback to address
+      
+      
+      
+funcCheckWin:
+      # using format: arr[i2][i]
+     
+     #horizontal
+      i2 = 0
+      while i2 =< 6
+      
+      while i =< 3
+         if arr[i2][i] == 1
+              if arr[i2][i+1] == 1 && arr[i2][i+2] == 1 && arr[i2][i+3] == 1
+                    return win
+                    
+                    
+         if arr[i2][i] == 2
+              if arr[i2][i+1] == 2 && arr[i2][i+2] == 2 && arr[i2][i+3] == 2
+                    return lose
+                    
+          i++
+          
+          i2++
+          
+          
+       #vertical
+       i2 = 0
+      while i2 =< 2
+      
+      while i =< 7
+         if arr[i2][i] == 1
+              if arr[i2+1][i] == 1 && arr[i2+2][i] == 1 && arr[i2+3][i] == 1
+                    return win
+                    
+                    
+         if arr[i2][i] == 2
+              if arr[i2+1][i] == 2 && arr[i2+2][i] == 2 && arr[i2+3][i] == 2
+                    return lose
+                    
+          i++
+          
+          i2++
+          
+          
+          #diagonal
+          
+          
+                    
+                    
+         
+      
+      
+      
+      
+      
+      
       
   
   
