@@ -1,39 +1,52 @@
 .data 
-
+#Board Characters
 playerCell: .asciiz "|X"
 blankCell:  .asciiz "|_"
 compCell:   .asciiz "|O"
 ender:      .asciiz "|\n"
-
+#Array
 baseArray:  .word 0:7
-
-prEntry:    .asciiz "Enter number for column: \n"
-
+		 
+#Prompts
+prEntry:    .asciiz "Enter number for column: (1-7)\n"
+prWelc:	    .asciiz "Welcom to Connect 4!\n"
 printW:     .asciiz "Congrats! You win!\n"
 printL:     .asciiz "Oh no, you lost :(\n"
+printD:     .asciiz "Draw, full boardstate\n"
+printE:     .asciiz "Error!"
+printInE:    .asciiz "Input not valid, please try again!\n"
+#Variables
+coloumn:    .word 0
 
 .text
-
-add $t2, $zero,$zero
-printBoard:
-add $t0, $zero,$zero #set $t0 to 0
-addi $t2, $t2, 1     	
-slti $t3, $t2, 6
-firstLoop:
-addi $t0, $t0, 1
-slti $t1, $t0, 7
-
+#Print Welcome Message
 li $v0, 4
-la $a0, blankCell
+la $a0, prWelc
 syscall
 
-bne $t1, $zero, firstLoop
-
-li $v0, 4
-la $a0, ender
-syscall
-
-bne $t3, $zero, printBoard
-
-
+inputLoop:
+# Print prompt
+     li $v0, 4
+     la $a0, prEntry
+     syscall             
+# Take input    
+     li $v0, 5            #Get ready to take input
+     syscall              #Input -> v0
+# If input <1 or >7, try again
+     #addi $t0, $0, 1
+     #addi $t1, $0, 7
+     bgt  $v0, 7, inputError
+     blt  $v0, 1, inputError
+     addi $v0, $v0, -1    #adjusts userInput for indexes
+     sw $v0, coloumn	 #Save input to coloumn
+# Terminate Program
+     li $v0, 10
+     syscall
+     
+inputError:
+     li $v0, 4
+     la $a0, printInE
+     syscall
+     j inputLoop
+    
 
