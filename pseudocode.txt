@@ -15,43 +15,69 @@ boardArray:  .word 0:7
                   0:7
                   0:7
 
-prEntry:    .asciiz "Enter number for column: \n"
+prEntry:    .asciiz "Enter number for column: (1-7)\n"
 
 printW:     .asciiz "Congrats! You win!\n"
 printL:     .asciiz "Oh no, you lost :(\n"
-
+printD:     .asciiz "Draw, full boardstate"
+printE:     .asciiz "Error!"
 .text
 
 LOOP:
 
-prompt user: - "Enter number for column: \n" //user enters a number from one to seven
-program checks 2d array, starting from base array to see if the value in that array at index <<userInput>> is greater than 0
+     li $v0, 4
+     la $a0, prEntry
+     syscall             #print prompt
+     
+    li $s5, 100          #save 100 to $s5
+    li $s4, 4            #save 4 to $s4
+    li $v0, 5            #Get ready to take input
+    syscall              #Input -> v0
+   
+    addi $t0, $v0, -1    #adjusts userInput for indexes
 
-loop:
-  if arr[<<userInput>>] == 0, then make it 1
-  else, go to next array
-  break loop after 6 iterations
-  
-  check win conditions loop:
-  //yet to implement/design
-  
-  computer randomly enters a col number
-  loop2:
-  if arr[<<compInput>>] == 0, then make it O
-  else, go to next row
-  break loop2 after 6 iterations
-    
-   check win conditions loop:
-  //yet to implement/design
-  
-  
-  call funcPrint
-  break LOOP if win/lose
-  
-  
-  print win/lose
-  
-  jr LOOP
+//funcEnter($t0,1);
+
+                     #randomize number 0-6 for cpu
+     li $v0, 42         #call for random number
+     li $a1, 6          #sets upper bound to 6 
+     syscall
+     
+     add $t0, $a0, $zero #move randomo number to $t0
+
+//funcEnter(n,2);
+
+      
+   //   jr LOOP;
+      
+      
+      
+  funcEnter(n, userNum):
+  #check if valid column
+if boardArray[5][n] != 0
+   
+       li $v0, 4
+       la $a0, Error
+       syscall        #print Error
+      
+      break;
+      
+      
+      #enter value into array
+      bool entered = false
+      int i2 = 0;
+      while !entered
+      
+           if boardArray[i2][n] > 0
+           i2++
+           
+           else
+           boardArray[i2][n] == userNum
+           entered = true
+           
+           
+      funcPrint;
+      funcCheckWin;
   
   funcPrint:
   for i2 < 6
@@ -97,12 +123,20 @@ funcCheckWin:
       while i =< 3
          if arr[i2][i] == 1
               if arr[i2][i+1] == 1 && arr[i2][i+2] == 1 && arr[i2][i+3] == 1
-                    return win
+                   li $v0, 4
+                   la $a0, printW
+                   syscall             #print win
+                 
+                    jr
                     
                     
          if arr[i2][i] == 2
               if arr[i2][i+1] == 2 && arr[i2][i+2] == 2 && arr[i2][i+3] == 2
-                    return lose
+                  li $v0, 4
+                  la $a0, printL
+                  syscall        #print lose
+                    
+                    jr
                     
           i++
           
@@ -111,17 +145,25 @@ funcCheckWin:
           
        #vertical
        i2 = 0
-      while i2 =< 2
+      while i2 < 2
       
-      while i =< 7
+      while i < 7
          if arr[i2][i] == 1
               if arr[i2+1][i] == 1 && arr[i2+2][i] == 1 && arr[i2+3][i] == 1
-                    return win
+                    li $v0, 4
+                    la $a0, printW
+                    syscall             #print win
+                    
+                    jr
                     
                     
          if arr[i2][i] == 2
               if arr[i2+1][i] == 2 && arr[i2+2][i] == 2 && arr[i2+3][i] == 2
-                    return lose
+                    li $v0, 4
+                    la $a0, printL
+                    syscall             #print lose
+                    
+                    jr
                     
           i++
           
@@ -131,11 +173,21 @@ funcCheckWin:
           #diagonal
           
           
-                    
-                    
+          #full case, draw
+          bool draw = true
+          for i2 < 6
+  
+             for i < 7
+      
+             if arr[i2][i] == 0
+                    draw = false
          
       
-      
+                   li $v0, 4
+                   la $a0, printD
+                   syscall             #print win
+             
+                    jr
       
       
       
