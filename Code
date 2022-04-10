@@ -31,7 +31,6 @@ colIndex:    .word 0
 li $v0, 4
 la $a0, prWelc
 syscall
-# CONSTANT ARGUMENTS
 
      
 inputLoop:
@@ -48,13 +47,15 @@ inputLoop:
 # Check for invalid input
      la  $a0, array			# base address of array into $a0
      lw  $a1, COL_SIZE			# num of coloumns into 	     $a1
-     add $a3, $v0, $0	
+     lw $a3, colIndex	
      jal validInput	   
 # Upload to Array
-     addi $a2, $0, -1			# row index set to 0
+     la $a0, array
+     addi $a2, $0, -1			# row index set to -1
+     lw  $a1, COL_SIZE			# num of coloumns into 	     $a1
      jal addValUser				# add to array(next available row)	
 # Print Board
-     addi $t2, $zero, -1
+     addi $t2, $zero, 6
      jal print
 # Check for win  
  	# player win
@@ -105,6 +106,7 @@ inputError:
 getAt:				#$a0 -> base addr, $a1 -> COL_SIZE,  $a2 -> row index,  $a3 -> coloumn Index
 move $s1, $t0
 add $t0, $t0, $0
+     lw  $a3, colIndex
      mul $t0, $a1, $a2 		        # row index * COL_SIZE
      add $t0, $t0, $a3			# + coloumnIndex
      mul $t0, $t0, DATA_SIZE			# * Data Size
@@ -118,16 +120,17 @@ move $t0, $s1
 print:	#t2 = -1
 move $s0, $ra
 printLoop:
-addi $t0, $zero, -1 #set $t0 to 0
-addi $t2, $t2, 1     	# t2 -> row tracker
-slti $t3, $t2, 5
+addi $t0, $zero, 7 	
+addi $t2, $t2, -1     	# t2 -> row tracker
+sgt $t3, $t2, 0
 firstLoop:
-addi $t0, $t0, 1	# t1 -> coloumn tracker
-slti $t1, $t0, 6
+addi $t0, $t0, -1	# t0 -> coloumn tracker
+sgt $t1, $t0, 0
 
 # print appropriate cell
 # set up arguments ($a2 = row index(t2), $a3 = coloumn index(t1))
 la  $a0, array
+lw  $a1, COL_SIZE
 add $a2, $t2, $0
 add $a3, $t1, $0
 jal getAt			#value in $v0
