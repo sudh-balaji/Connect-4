@@ -53,7 +53,9 @@ inputLoop:
 # Upload to Array
      addi $a2, $0, -1			# row index set to 0
      jal addValUser				# add to array(next available row)	
-     	 
+# Print Board
+     addi $t2, $zero, -1
+     jal print
 # Check for win  
  	# player win
 # Computer Randomized Turn
@@ -101,33 +103,40 @@ inputError:
      j inputLoop
     
 getAt:				#$a0 -> base addr, $a1 -> COL_SIZE,  $a2 -> row index,  $a3 -> coloumn Index
+move $s1, $t0
+add $t0, $t0, $0
      mul $t0, $a1, $a2 		        # row index * COL_SIZE
      add $t0, $t0, $a3			# + coloumnIndex
      mul $t0, $t0, DATA_SIZE			# * Data Size
      add $t0, $t0, $a0			# + base addr
      lw  $v0, ($t0)			# value in $v0
      la  $v1, ($t0)
+move $t0, $s1
      jr  $ra				
 
 
-
-
-
-
-
-//////DID NOT USE CODE BELOW THIS YET
-add $t2, $zero,$zero
-printBoard:
-add $t0, $zero,$zero #set $t0 to 0
-addi $t2, $t2, 1     	
-slti $t3, $t2, 6
+print:	#t2 = -1
+move $s0, $ra
+printLoop:
+addi $t0, $zero, -1 #set $t0 to 0
+addi $t2, $t2, 1     	# t2 -> row tracker
+slti $t3, $t2, 5
 firstLoop:
-addi $t0, $t0, 1
-slti $t1, $t0, 7
+addi $t0, $t0, 1	# t1 -> coloumn tracker
+slti $t1, $t0, 6
 
-li $v0, 4
-la $a0, blankCell
-syscall
+# print appropriate cell
+# set up arguments ($a2 = row index(t2), $a3 = coloumn index(t1))
+la  $a0, array
+add $a2, $t2, $0
+add $a3, $t1, $0
+jal getAt			#value in $v0
+beqz $v0, printBlank
+addi $t5, $0, 1
+addi $t6, $0, 2
+beq  $v0, $t5, printUser
+beq  $v0, $t6, printComp
+continue:
 
 bne $t1, $zero, firstLoop
 
@@ -135,7 +144,25 @@ li $v0, 4
 la $a0, ender
 syscall
 
-bne $t3, $zero, printBoard
+bne $t3, $zero, printLoop
 
+move $ra, $s0
+jr $ra
 
+printBlank:
+li $v0, 4
+la $a0, blankCell
+syscall
+j continue
 
+printUser:
+li $v0, 4
+la $a0, playerCell
+syscall
+j continue
+
+printComp:
+li $v0, 4
+la $a0, compCell
+syscall
+j continue
