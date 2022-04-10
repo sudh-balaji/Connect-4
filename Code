@@ -123,12 +123,12 @@ move $t0, $s1
 print:	#t2 = -1
 move $s0, $ra
 printLoop:
-addi $t0, $zero, 7 	
+addi $t0, $zero, -1 	
 addi $t2, $t2, -1     	# t2 -> row tracker
 sgt $t3, $t2, 0
 firstLoop:
-addi $t0, $t0, -1	# t0 -> coloumn tracker
-sgt $t1, $t0, 0
+addi $t0, $t0, 1	# t0 -> coloumn tracker
+slti $t1, $t0, 6
 
 # print appropriate cell
 # set up arguments ($a2 = row index(t2), $a3 = coloumn index(t1))
