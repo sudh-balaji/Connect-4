@@ -1,18 +1,3 @@
-.data 
-
-playerCell: .asciiz "|X"
-blankCell:  .asciiz "|_"
-compCell:   .asciiz "|O"
-ender:      .asciiz "|\n"
-
-baseArray:  .word 0:7
-
-prEntry:    .asciiz "Enter number for column: \n"
-
-printW:     .asciiz "Congrats! You win!\n"
-printL:     .asciiz "Oh no, you lost :(\n"
-
-.text
 
 .data 
 #Board Characters
