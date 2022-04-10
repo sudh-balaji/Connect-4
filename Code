@@ -1,4 +1,3 @@
-
 .data 
 #Board Characters
 playerCell: .asciiz "|X"
@@ -50,22 +49,38 @@ inputLoop:
      la  $a0, array			# base address of array into $a0
      lw  $a1, COL_SIZE			# num of coloumns into 	     $a1
      add $a3, $v0, $0	
-     jal validInput	
-
-     
+     jal validInput	   
 # Upload to Array
+     addi $a2, $0, -1			# row index set to 0
+     jal addValUser				# add to array(next available row)	
      	 
 # Check for win  
-
+ 	# player win
 # Computer Randomized Turn
+	
+# Check for win
+	# computer win
+# Start loop again
 # Jump Terminate
 j Exit
+
+addValUser:	#$a0 -> base addr, $a1 -> COL_SIZE,  $a2 -> row index,  $a3 -> coloumn index, 	
+addi $a2, $a2, 1
+move $s0, $ra
+jal getAt		#result in $v0, address in $v1
+bne $v0, $0, addValUser
+move $ra, $s0
+# set arguments before call
+addi $t0, $0, 1    
+sw $t0, ($v1)
+jr $ra
+
 # Check Valid Input
 validInput:				
 # If input <1 or >7, try again
      bgt  $a3, 6, inputError
      blt  $a3, 0, inputError
-# Check if coloumn is full		(getAt function) $a0 -> base addr(permanent), $a1 -> COL_SIZE(permanent),  $a2 -> row index,  $a3 -> coloumn index
+# Check if coloumn is full		(getAt function) $a0 -> base addr, $a1 -> COL_SIZE,  $a2 -> row index,  $a3 -> coloumn index
      addi $a2, $0, 5			# row index into $a2
      move $s0, $ra
      jal getAt
@@ -91,7 +106,11 @@ getAt:				#$a0 -> base addr, $a1 -> COL_SIZE,  $a2 -> row index,  $a3 -> coloumn
      mul $t0, $t0, DATA_SIZE			# * Data Size
      add $t0, $t0, $a0			# + base addr
      lw  $v0, ($t0)			# value in $v0
+     la  $v1, ($t0)
      jr  $ra				
+
+
+
 
 
 
