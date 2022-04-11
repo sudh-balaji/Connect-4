@@ -54,8 +54,8 @@ inputLoop:
      addi $a2, $0, -1			# row index set to -1
      lw  $a1, COL_SIZE			# num of coloumns into 	     $a1
      jal addValUser				# add to array(next available row)	
-# Print Board
-     addi $t2, $zero, 6
+cont:
+# Print Board     
      jal print
 # Check for win  
  	# player win
@@ -70,17 +70,17 @@ j Exit
 
 addValUser:	#$a0 -> base addr, $a1 -> COL_SIZE,  $a2 -> row index,  $a3 -> coloumn index, 	
 addi $a2, $a2, 1
-move $s0, $ra
+#move $s0, $ra
 la $a0, array
 lw $a3, colIndex
 lw $a1, COL_SIZE
 jal getAt		#result in $v0, address in $v1
 bne $v0, $0, addValUser
-move $ra, $s0
+#move $ra, $s0
 # set arguments before call
 addi $t0, $0, 1    
 sw $t0, ($v1)
-jr $ra
+j cont
 
 # Check Valid Input
 validInput:				
@@ -123,6 +123,7 @@ move $t0, $s1
 
 print:	#t2 = -1
 move $s0, $ra
+addi $t2, $zero, 6
 printLoop:
 addi $t0, $zero, -1 	
 addi $t2, $t2, -1     	# t2 -> row tracker
