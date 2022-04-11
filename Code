@@ -64,6 +64,7 @@ inputLoop:
 # Check for win
 	# computer win
 # Start loop again
+j inputLoop
 # Jump Terminate
 j Exit
 
