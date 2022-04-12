@@ -4,6 +4,7 @@ playerCell: .asciiz "|X"
 blankCell:  .asciiz "|_"
 compCell:   .asciiz "|O"
 ender:      .asciiz "|\n"
+newLine:    .asciiz "\n"
 #Array
 array:      .word 0, 0, 0, 0, 0, 0, 0
 	    .word 0, 0, 0, 0, 0, 0, 0
@@ -56,17 +57,53 @@ inputLoop:
      jal addValUser				# add to array(next available row)	
 cont:
 # Print Board     
-     jal print
+     #jal print
 # Check for win  
  	# player win
 # Computer Randomized Turn
-	
+     j addValComp
+cont2:
+jal print
 # Check for win
 	# computer win
 # Start loop again
 j inputLoop
 # Jump Terminate
 j Exit
+
+addValComp:
+     
+     li $v0, 42         # call for random number
+     li $a1, 6          # sets upper bound to 6 
+     syscall		# results in $a0(0-6)
+     move $a3, $a0	# save result
+     addi $a2, $0, 5
+     
+     la $a0, array
+     jal getAt
+     bnez $v0, addValComp	#if invalid coloumn, get new random number
+     li $a2, -1
+     compLoop:
+     addi $a2, $a2, 1     
+     la $a0, array
+     lw $a1, COL_SIZE
+     jal getAt
+     bne $v0, $0, compLoop
+     addi $t0, $0, 2
+     sw $t0, ($v1)
+     j cont2
+     
+#addi $a2, $a2, 1
+#la $a0, array
+#lw $a3, colIndex
+#lw $a1, COL_SIZE
+jal getAt		#result in $v0, address in $v1
+bne $v0, $0, addValUser
+# set arguments before call
+addi $t0, $0, 1    
+sw $t0, ($v1)
+j cont2
+
 
 addValUser:	#$a0 -> base addr, $a1 -> COL_SIZE,  $a2 -> row index,  $a3 -> coloumn index, 	
 addi $a2, $a2, 1
@@ -87,7 +124,7 @@ validInput:
 # If input <1 or >7, try again
      bgt  $a3, 6, inputError
      blt  $a3, 0, inputError
-# Check if coloumn is full		(getAt function) $a0 -> base addr, $a1 -> COL_SIZE,  $a2 -> row index,  $a3 -> coloumn index
+# Check if coloumn is full		(getAt function) $a0 -> base addr, $a1 -> COL_SIZE,  ,  $a3 -> coloumn index
      addi $a2, $0, 5			# row index into $a2
      move $s0, $ra
      jal getAt
