@@ -91,6 +91,9 @@ lw $t1, ($v1)
 add $t0, $t0, $t1
 beq $t3, $t4, colLoop
 
+checkDiagonal:
+
+
 
 
 
