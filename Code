@@ -93,6 +93,32 @@ beq $t3, $t4, colLoop
 
 checkDiagonal:
 
+li $t1, 0  # row
+    loopRow:
+     li $t2, 0  # column
+        loopColumn:
+            add $t3, $t2, $t1
+            li $t0, 0 # diagonal offset 
+            li $t4, 0    # counter
+            loopDiagonal:
+                add $t3, $t3, $t0 # address of cell to check
+                lw $s1, board($t3)
+                # $s7 contains value of the cell for whoever played last
+                bne $s1, $s7, breakLoopDiagonal
+                addi $t4, $t4, 1
+            addi $t0, $t0, 9 # add 9 (8 to go down a row, 1 to go right a cell)
+            # branch until 4 iterations have occured
+            bne $t0, 36, loopDiagonal
+            # if $t4 is 4, game is won
+            beq $t4, 4, win
+            breakLoopDiagonal:
+        addi $t2, $t2, 1 # move right one to check next diagonal
+        # branch until 4 iterations have occured
+        bne $t2, 4, loopColumn
+    addi $t1, $t1, 8 # move down a row to check next row of diagonals
+    # loop until 3 iterations have occured
+    bne $t2, 24, loopRow
+
 
 
 
