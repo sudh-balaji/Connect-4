@@ -126,6 +126,14 @@ jal print
 li $v0, 10
 syscall
 
+printDraw:
+li $v0, 4
+la $a0, printD
+syscall
+jal print
+li $v0, 10
+syscall
+
 addValComp:
      
      li $v0, 42         # call for random number
