@@ -228,7 +228,7 @@ rowLoop:
 	jr $ra
 
 colLoop:
-beq $a3, 4, rowLoop	#increment row
+beq $a3, 3, rowLoop	#increment row
 addi $a3, $a3, 1	# increment coloumn
 jal getAt		# return value in $v0
 beqz $v0, colLoop	# if value = 0, check next
