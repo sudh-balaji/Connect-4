@@ -56,6 +56,7 @@ cont:
 jal checkHorizontal
 jal checkVertical
 jal checkDiagonalOne
+jal checkDiagonalTwo
 cont3:  
 # Computer Randomized Turn
      j addValComp
@@ -63,12 +64,53 @@ cont2:
 jal print
 # Check for win
 	# computer win
+jal checkHorizontal
+jal checkVertical
+jal checkDiagonalOne
+jal checkDiagonalTwo
 # Start loop again
 j inputLoop
 # Jump Terminate
 j Exit
 
 
+checkDiagonalTwo:
+move $s2, $ra
+# set col index
+addi $a3, $0, -1
+colLoop4:
+	# increment col index
+	addi $a3, $a3, 1
+	# set row index
+	addi $a2, $0, 2
+	# if coloumn != 7, continue code
+	bne $a3, 7, rowLoop4
+	# otherwise, exit loop
+	move $ra, $s2
+	jr $ra	
+	rowLoop4:
+		beq $a2, 6, colLoop4	# if row 6, increment coloumn
+		addi $a2, $a2, 1
+		jal getAt
+		beqz $v0, rowLoop4	# if '0', go next
+		add $t0, $v0, $0	# stores sum
+		add $t3, $0, $0		# nextThree tracker
+		nextThree4:
+			addi $t3, $t3, 1
+			addi $v1, $v1, -24
+			lw $t1, ($v1)
+			beqz $t1, rowLoop4	# if come across 0, check next
+			add $t0, $t0, $t1
+			beq $t3, 3, check4
+			j nextThree4
+		
+check4:	
+# if sum is 4, print user win and end
+beq $t0, 4, printWin
+# if sum is 8, print comp win and end
+beq $t0, 8, printLose
+# else keep checking
+j rowLoop4
 
 checkDiagonalOne:
 move $s2, $ra
