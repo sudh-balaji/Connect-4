@@ -54,6 +54,7 @@ inputLoop:
 cont:
 #Check for use win
 jal checkHorizontal
+jal checkVertical
 jal checkDiagonalOne
 cont3:  
 # Computer Randomized Turn
@@ -67,6 +68,84 @@ j inputLoop
 # Jump Terminate
 j Exit
 
+
+
+checkDiagonalOne:
+move $s2, $ra
+# set col index
+addi $a3, $0, -1
+colLoop3:
+	# increment col index
+	addi $a3, $a3, 1
+	# set row index
+	addi $a2, $0, -1
+	# if coloumn != 7, continue code
+	bne $a3, 7, rowLoop3
+	# otherwise, exit loop
+	move $ra, $s2
+	jr $ra	
+	rowLoop3:
+		beq $a2, 3, colLoop3	# if row 3, increment
+		addi $a2, $a2, 1
+		jal getAt
+		beqz $v0, rowLoop3	# if '0', go next
+		add $t0, $v0, $0	# stores sum
+		add $t3, $0, $0		# nextThree tracker
+		nextThree3:
+			addi $t3, $t3, 1
+			addi $v1, $v1, 32
+			lw $t1, ($v1)
+			beqz $t1, rowLoop3	# if come across 0, check next
+			add $t0, $t0, $t1
+			beq $t3, 3, check3
+			j nextThree3
+		
+check3:	
+# if sum is 4, print user win and end
+beq $t0, 4, printWin
+# if sum is 8, print comp win and end
+beq $t0, 8, printLose
+# else keep checking
+j rowLoop3
+
+checkVertical:
+move $s2, $ra
+# set col index
+addi $a3, $0, -1
+colLoop2:
+	# increment col index
+	addi $a3, $a3, 1
+	# set row index
+	addi $a2, $0, -1
+	# if coloumn != 7, continue code
+	bne $a3, 7, rowLoop2
+	# otherwise, exit loop
+	move $ra, $s2
+	jr $ra	
+	rowLoop2:
+		beq $a2, 3, colLoop2	# if row 3, 
+		addi $a2, $a2, 1
+		jal getAt
+		beqz $v0, rowLoop2	# if '0', go next
+		add $t0, $v0, $0	# stores sum
+		add $t3, $0, $0		# nextThree tracker
+		nextThree2:
+			addi $t3, $t3, 1
+			addi $v1, $v1, 28
+			lw $t1, ($v1)
+			beqz $t1, rowLoop2	# if come across 0, check next
+			add $t0, $t0, $t1
+			beq $t3, 3, check2
+			j nextThree2
+		
+check2:	
+# if sum is 4, print user win and end
+beq $t0, 4, printWin
+# if sum is 8, print comp win and end
+beq $t0, 8, printLose
+# else keep checking
+j rowLoop2
+	
 checkHorizontal:
 # set constants for use ($t4 -> 3, $t5 -> 4, $t6 -> 8)		
 addi $t4, $0, 3		# constant var for nextThree label comparison
@@ -77,18 +156,18 @@ addi $a2, $0, -1		# row index
 rowLoop:
 	# $t0 tracks sum (reset before each coloumn iteration)
 	add $t0, $0, $0
-	# decrement row index
+	# increment row index
 	addi $a2, $a2, 1
 	# set coloumn index
 	addi $a3, $0, -1
-	# if row != -1, continue code 	
+	# if row != 6, continue code 	
 	bne $a2, 6, colLoop	
 	# otherwise, restore $ra and exit loop
 	move $ra, $s2
 	jr $ra
 
 colLoop:
-beq $a3, $t5, rowLoop	#increment row
+beq $a3, 4, rowLoop	#increment row
 addi $a3, $a3, 1	# increment coloumn
 jal getAt		# return value in $v0
 beqz $v0, colLoop	# if value = 0, check next
@@ -102,10 +181,6 @@ add $t3, $0, $0		# tracker for nextThree
 	add $t0, $t0, $t1
 	beq $t3, 3, check
 	j nextThree
-
-
-
-
 check:
 # if sum is 4, print user win and end
 beq $t0, 4, printWin
@@ -113,45 +188,6 @@ beq $t0, 4, printWin
 beq $t0, 8, printLose
 # else keep checking
 j colLoop
-
-checkDiagonalOne:
-# save $ra val
-move $s2, $ra
-addi $a2, $0, -1
-rowLoop2:
-	#$t0 tracks sum 
-	add $t0,$0,$0
-	#increment row index
-	addi $a2, $a2, 1
-	#set column index
-	addi $a3, $0, -1
-	#if row !=6, continue code
-	bne $a2,6, colLoop2
-	
-	move $ra, $s2
-	jr $ra
-
-	colLoop2:
-		beq $a3, 4, rowLoop	#increment row
-		addi $a3, $a3, 1	# increment coloumn
-		jal getAt		# return value in $v0
-		beqz $v0, colLoop	# if value = 0, check next
-		add $t0, $v0, $0      #store val in $t0
-		add $t3, $0, $0     # tracker for net vertical index
-	nextDThreeOne:
-	addi $t3, $t3, 1
-	addi $v1, $v1, 32
-	lw $t1, ($v1)
-	beqz $t1, colLoop  # when index is 0 go to next column
-	add $t0, $t0, $t1
-	beq $t3,3, check2
-	j nextDThreeOne
-check2:
-beq $t0, 4, printWin
-beq $t0, 8, printLose
-j colLoop2
-
-
 
 printWin:
 li $v0, 4
@@ -247,7 +283,7 @@ lw $a1, COL_SIZE
 # math to get array val/address
      mul $t0, $a1, $a2 		        # row index * COL_SIZE
      add $t0, $t0, $a3			# + coloumnIndex
-     mul $t0, $t0, DATA_SIZE			# * Data Size
+     mul $t0, $t0, DATA_SIZE		# * Data Size
      add $t0, $t0, $a0			# + base addr
      lw  $v0, ($t0)			# value in $v0
      la  $v1, ($t0)			# address in #v1
