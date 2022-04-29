@@ -3,17 +3,18 @@
 
 Step 1: Open the MARS simulator and open the Connect 4 assembly file.
 
+Step 2: Go to settings and enable "Assemble all files in directory" and "Initialize Program Counter to global 'main' if defined"
 
-Step 2: Assemble the file and run it.
-
-
-Step 3: An empty board will be printed out. The console will prompt you to choose a column number from 1-7. If you choose any value other than 1-7, you will be asked again to choose a value from 1-7.
+Step 3: Assemble the file and run it.
 
 
-Step 4: A marker (either X or O) will fill one space in the board. Then the computer will place its marker on any random spot on the board. In Connect 4, the markers are first placed at the bottom of the board and can then stack on top of other markers.
+Step 4: An empty board will be printed out. The console will prompt you to choose a column number from 1-7. If you choose any value other than 1-7, you will be asked again to choose a value from 1-7.
 
 
-Step 5: Steps 3-4 will repeat until either you or the computer wins - if 4 of your markers connect together either horizontally, vertically, or diagonally; or until there’s a draw - all spaces in the board are filled and less than 4 of yours and the computer’s markers connect together.
+Step 5: A marker (either X or O) will fill one space in the board. Then the computer will place its marker on any random spot on the board. In Connect 4, the markers are first placed at the bottom of the board and can then stack on top of other markers.
 
 
-Step 6: After a conclusion has been reached (either a win or draw), the appropriate win message or draw message will be printed and the game ends. You can end the program after that.
+Step 6: Steps 3-4 will repeat until either you or the computer wins - if 4 of your markers connect together either horizontally, vertically, or diagonally; or until there’s a draw - all spaces in the board are filled and less than 4 of yours and the computer’s markers connect together.
+
+
+Step 7: After a conclusion has been reached (either a win or draw), the appropriate win message or draw message will be printed and the game ends. You can end the program after that.
